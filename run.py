@@ -11,8 +11,8 @@ from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager as CM
 
 # complete these 2 fields ==================
-USERNAME = 'your instagram username'
-PASSWORD = 'your instagram password'
+USERNAME = 'redian_'
+PASSWORD = '@realitet2020'
 # ==========================================
 
 usr = input('Put the username for scrapping followers from: ')
@@ -25,6 +25,7 @@ TIME = 0.069 * int(user_input)
 def scrape(username):
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
+    options.add_argument("--log-level=3")
 
     mobile_emulation = {
         "userAgent": 'Mozilla/5.0 (Linux; Android 4.0.3; HTC One X Build/IML74K) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/83.0.1025.133 Mobile Safari/535.19'
@@ -37,7 +38,7 @@ def scrape(username):
     bot.set_window_size(500, 950)
     time.sleep(5)
     bot.find_element_by_xpath(
-        '/html/body/div[1]/section/main/article/div/div/div/div[2]/button').click()
+        '//*[@id="react-root"]/section/main/article/div/div/div/div[3]/button[1]').click()
     print("Logging in...")
     time.sleep(1)
     username_field = bot.find_element_by_xpath(
