@@ -11,8 +11,8 @@ from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager as CM
 
 # complete these 2 fields ==================
-USERNAME = 'redian_'
-PASSWORD = '@realitet2020'
+USERNAME = 'your instagram username'
+PASSWORD = 'your instagram password'
 # ==========================================
 
 usr = input('Put the username for scrapping followers from: ')
