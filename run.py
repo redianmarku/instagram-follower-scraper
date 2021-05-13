@@ -14,8 +14,14 @@ USERNAME = 'your instagram username'
 PASSWORD = 'your instagram password'
 # ==========================================
 
+TIMEOUT = 15
+
 
 def scrape():
+    usr = input('Whose followers do you want to scrape: ')
+
+    user_input = int(input('How many followers do you want to scrape (60-500 recommended): '))
+
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
     options.add_argument('--no-sandbox')
@@ -69,7 +75,7 @@ def scrape():
 
     users = set()
 
-    for _ in range(round(TIME)):
+    for _ in range(round(user_input // 10)):
         followers_elem.click()
 
         ActionChains(bot).send_keys(Keys.END).perform()
@@ -100,9 +106,4 @@ def scrape():
 
 
 if __name__ == '__main__':
-    usr = input('Whose followers do you want to scrape: ')
-    user_input = input('How many followers do you want to scrape (60-500 recommended): ')
-    TIME = int(user_input) // 10
-    TIMEOUT = 15
-
     scrape()
