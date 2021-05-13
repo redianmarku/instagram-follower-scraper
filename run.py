@@ -104,8 +104,6 @@ def scrape():
     with open('followers.txt', mode) as file:
         file.write('\n'.join(users) + "\n")
 
-    print("Finished!")
-
 
 if __name__ == '__main__':
     scrape()
