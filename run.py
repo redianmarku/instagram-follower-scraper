@@ -14,14 +14,6 @@ USERNAME = 'your instagram username'
 PASSWORD = 'your instagram password'
 # ==========================================
 
-usr = input('Whose followers do you want to scrape: ')
-
-user_input = input('How many followers do you want to scrape (60-500 recommended): ')
-
-TIME = int(user_input) // 10
-
-TIMEOUT = 15
-
 
 def scrape():
     options = webdriver.ChromeOptions()
@@ -108,4 +100,9 @@ def scrape():
 
 
 if __name__ == '__main__':
+    usr = input('Whose followers do you want to scrape: ')
+    user_input = input('How many followers do you want to scrape (60-500 recommended): ')
+    TIME = int(user_input) // 10
+    TIMEOUT = 15
+
     scrape()
