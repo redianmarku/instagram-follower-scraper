@@ -7,92 +7,103 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager as CM
 
-# complete these 2 fields ==================
+# Complete these 2 fields ==================
 USERNAME = 'your instagram username'
 PASSWORD = 'your instagram password'
 # ==========================================
 
-usr = input('Put the username for scrapping followers from: ')
-
-user_input = input(
-    'Put how many followers you want to scrape (60-500 recommanded):')
-TIME = 0.069 * int(user_input)
+TIMEOUT = 15
 
 
-def scrape(username):
+def scrape():
+    usr = input('Whose followers do you want to scrape: ')
+
+    user_input = int(input('How many followers do you want to scrape (60-500 recommended): '))
+
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
+    options.add_argument('--no-sandbox')
     options.add_argument("--log-level=3")
-
-    mobile_emulation = {
-        "userAgent": 'Mozilla/5.0 (Linux; Android 4.0.3; HTC One X Build/IML74K) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/83.0.1025.133 Mobile Safari/535.19'
-    }
-    options.add_experimental_option("mobileEmulation", mobile_emulation)
 
     bot = webdriver.Chrome(executable_path=CM().install(), options=options)
 
-    bot.get('https://instagram.com/')
-    bot.set_window_size(500, 950)
-    time.sleep(5)
-    bot.find_element_by_xpath(
-        '//*[@id="react-root"]/section/main/article/div/div/div/div[3]/button[1]').click()
+    bot.get('https://www.instagram.com/accounts/login/')
+
+    time.sleep(2)
+
     print("Logging in...")
-    time.sleep(1)
-    username_field = bot.find_element_by_xpath(
-        '/html/body/div[1]/section/main/article/div/div/div/form/div[1]/div[3]/div/label/input')
-    username_field.send_keys(USERNAME)
 
-    find_pass_field = (
-        By.XPATH, '/html/body/div[1]/section/main/article/div/div/div/form/div[1]/div[4]/div/label/input')
-    WebDriverWait(bot, 50).until(
-        EC.presence_of_element_located(find_pass_field))
-    pass_field = bot.find_element(*find_pass_field)
-    WebDriverWait(bot, 50).until(
-        EC.element_to_be_clickable(find_pass_field))
-    pass_field.send_keys(PASSWORD)
-    bot.find_element_by_xpath(
-        '/html/body/div[1]/section/main/article/div/div/div/form/div[1]/div[6]/button').click()
+    user_element = WebDriverWait(bot, TIMEOUT).until(
+        EC.presence_of_element_located((
+            By.XPATH, '//*[@id="loginForm"]/div/div[1]/div/label/input')))
+
+    user_element.send_keys(USERNAME)
+
+    pass_element = WebDriverWait(bot, TIMEOUT).until(
+        EC.presence_of_element_located((
+            By.XPATH, '//*[@id="loginForm"]/div/div[2]/div/label/input')))
+
+    pass_element.send_keys(PASSWORD)
+
+    login_button = WebDriverWait(bot, TIMEOUT).until(
+        EC.presence_of_element_located((
+            By.XPATH, '//*[@id="loginForm"]/div/div[3]')))
+
+    time.sleep(0.4)
+
+    login_button.click()
+
     time.sleep(5)
 
-    link = 'https://www.instagram.com/{}/'.format(usr)
-    bot.get(link)
-    time.sleep(5)
+    bot.get('https://www.instagram.com/{}/'.format(usr))
 
-    bot.find_element_by_xpath(
-        '//*[@id="react-root"]/section/main/div/ul/li[2]/a').click()
+    time.sleep(3.5)
 
-    time.sleep(3)
-    print('Scrapping...')
-    for i in range(round(TIME)):
+    WebDriverWait(bot, TIMEOUT).until(
+        EC.presence_of_element_located((
+            By.XPATH, '//*[@id="react-root"]/section/main/div/header/section/ul/li[2]/a'))).click()
+
+    time.sleep(2)
+
+    followers_elem = WebDriverWait(bot, TIMEOUT).until(
+        EC.presence_of_element_located((
+            By.XPATH, '/html/body/div[5]/div/div/div[2]/ul/div/li[1]')))
+
+    print('Scraping...')
+
+    users = set()
+
+    for _ in range(round(user_input // 10)):
+        followers_elem.click()
+
         ActionChains(bot).send_keys(Keys.END).perform()
-        time.sleep(3)
+
+        time.sleep(2)
 
         followers = bot.find_elements_by_xpath(
-            '//*[@id="react-root"]/section/main/div/ul/div/li/div/div[1]/div[2]/div[1]/a')
+            '/html/body/div[5]/div/div/div[2]/ul/div/li/div/div[1]/div/div/a')
 
-        urls = []
-
-        # getting url from href attribute in title
+        # Getting url from href attribute
         for i in followers:
-            if i.get_attribute('href') != None:
-                urls.append(i.get_attribute('href'))
+            if i.get_attribute('href'):
+                users.add(i.get_attribute('href').split("/")[3])
             else:
                 continue
 
-    print('Converting...')
-    users = []
-    for url in urls:
-        user = url.replace('https://www.instagram.com/', '').replace('/', '')
-        users.append(user)
+    mode = "a"
+
+    if os.path.exists("followers.txt"):
+        choice = input("You already have a file named 'followers.txt'\n"
+                       "Do you want to delete it's content? (y/N): ").lower()
+        mode = "w" if choice == "y" else mode
 
     print('Saving...')
-    f = open('followers.txt', 'w')
-    s1 = '\n'.join(users)
-    f.write(s1)
-    f.close()
+
+    with open('followers.txt', mode) as file:
+        file.write('\n'.join(users) + "\n")
 
 
-scrape(usr)
+if __name__ == '__main__':
+    scrape()
