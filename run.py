@@ -62,28 +62,23 @@ def scrape():
     time.sleep(3.5)
 
     WebDriverWait(bot, TIMEOUT).until(
-        EC.presence_of_element_located((
-            By.XPATH, '//*[@id="react-root"]/section/main/div/header/section/ul/li[2]/a'))).click()
+            EC.presence_of_element_located((
+                By.XPATH, '//*[@id="react-root"]/section/main/div/ul/li[2]/a'))).click()
 
     time.sleep(2)
-
-    followers_elem = WebDriverWait(bot, TIMEOUT).until(
-        EC.presence_of_element_located((
-            By.XPATH, '/html/body/div[5]/div/div/div[2]/ul/div/li[1]')))
 
     print('Scraping...')
 
     users = set()
 
     for _ in range(round(user_input // 10)):
-        followers_elem.click()
 
         ActionChains(bot).send_keys(Keys.END).perform()
 
         time.sleep(2)
 
         followers = bot.find_elements_by_xpath(
-            '/html/body/div[5]/div/div/div[2]/ul/div/li/div/div[1]/div/div/a')
+            '//*[@id="react-root"]/section/main/div/ul/div/li/div/div[1]/div[2]/div[1]/a')
 
         # Getting url from href attribute
         for i in followers:
