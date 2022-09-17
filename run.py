@@ -10,8 +10,8 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager as CM
 
 # Complete these 2 fields ==================
-USERNAME = 'your instagram username'
-PASSWORD = 'your instagram password'
+USERNAME = 'xxx'
+PASSWORD = 'xxx'
 # ==========================================
 
 TIMEOUT = 15
@@ -68,7 +68,7 @@ def scrape():
 
     WebDriverWait(bot, TIMEOUT).until(
         EC.presence_of_element_located((
-            By.XPATH, '//*[@id="react-root"]/section/main/div/ul/li[2]/a'))).click()
+            By.XPATH, "//a[contains(@href, '/following')]"))).click()
 
     time.sleep(2)
 
@@ -83,8 +83,7 @@ def scrape():
         time.sleep(2)
 
         followers = bot.find_elements_by_xpath(
-            '//*[@id="react-root"]/section/main/div/ul/div/li/div/div[1]/div[2]/div[1]/a')
-
+            "//a[contains(@href, '/')]")
         # Getting url from href attribute
         for i in followers:
             if i.get_attribute('href'):
