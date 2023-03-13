@@ -9,13 +9,9 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from decouple import config
 
-# Setup a .env file in the current directory
-# like 
-# iguser=yourusername 
-# igpassword=yourpsw
-# ==========================================
-USERNAME = config("iguser")
-PASSWORD = config("igpassword")
+# Complete these 2 fields ==================
+USERNAME = 'xxx'
+PASSWORD = 'xxx'
 # ==========================================
 
 TIMEOUT = 15
@@ -89,15 +85,14 @@ def scrape():
 
         time.sleep(1)
 
-    followers = bot.find_elements(By.XPATH,
-    "//a[contains(@href, '/')]")
-
-    # Getting url from href attribute
-    for i in followers:
-        if i.get_attribute('href'):
-            users.add(i.get_attribute('href').split("/")[3])
-        else:
-            continue
+        followers = bot.find_elements_by_xpath(
+            "//a[contains(@href, '/')]")
+        # Getting url from href attribute
+        for i in followers:
+            if i.get_attribute('href'):
+                users.add(i.get_attribute('href').split("/")[3])
+            else:
+                continue
 
     print('[Info] - Saving...')
     print('[DONE] - Your followers are saved in followers.txt file!')
