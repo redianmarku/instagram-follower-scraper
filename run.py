@@ -5,17 +5,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from decouple import config
+from webdriver_manager.chrome import ChromeDriverManager as CM
 
-# Setup a .env file in the current directory
-# like 
-# iguser=yourusername 
-# igpassword=yourpsw
-# ==========================================
-USERNAME = config("iguser")
-PASSWORD = config("igpassword")
+# Complete these 2 fields ==================
+USERNAME = '####'
+PASSWORD = '####'
 # ==========================================
 
 TIMEOUT = 15
@@ -47,25 +41,25 @@ def scrape():
 
     print("[Info] - Logging in...")  
 
-    user_element = WebDriverWait(bot, TIMEOUT).until(
-        EC.presence_of_element_located((
-            By.XPATH, '//*[@id="loginForm"]/div[1]/div[3]/div/label/input')))
+    username = WebDriverWait(
+        bot, 10).until(EC.element_to_be_clickable(
+        (By.CSS_SELECTOR, "input[name='username']")))
 
-    user_element.send_keys(USERNAME)
+    # target Password
+    password = WebDriverWait(
+        bot, 10).until(EC.element_to_be_clickable(
+        (By.CSS_SELECTOR, "input[name='password']")))
 
-    pass_element = WebDriverWait(bot, TIMEOUT).until(
-        EC.presence_of_element_located((
-            By.XPATH, '//*[@id="loginForm"]/div[1]/div[4]/div/label/input')))
+    # enter username and password
+    username.clear()
+    username.send_keys(USERNAME)
+    password.clear()
+    password.send_keys(PASSWORD)
 
-    pass_element.send_keys(PASSWORD)
-
-    login_button = WebDriverWait(bot, TIMEOUT).until(
-        EC.presence_of_element_located((
-            By.XPATH, '//*[@id="loginForm"]/div[1]/div[6]/button')))
-
-    time.sleep(0.4)
-
-    login_button.click()
+    # target the login button and click it
+    button = WebDriverWait(
+        bot, 2).until(EC.element_to_be_clickable(
+        (By.CSS_SELECTOR, "button[type='submit']"))).click()
 
     time.sleep(10)
 
