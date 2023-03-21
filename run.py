@@ -1,4 +1,4 @@
-import time
+import time, os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -6,11 +6,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager as CM
+from selenium.common.exceptions import NoSuchElementException
 
-# Complete these 2 fields ==================
-USERNAME = '####'
-PASSWORD = '####'
-# ==========================================
+
+USERNAME = os.environ.get('USERNAME')
+PASSWORD = os.environ.get('PASSWORD')
 
 TIMEOUT = 15
 
@@ -29,15 +29,23 @@ def scrape():
         "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/90.0.1025.166 Mobile Safari/535.19"}
     options.add_experimental_option("mobileEmulation", mobile_emulation)
 
-    bot = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    bot = webdriver.Chrome(executable_path=CM().install(), options=options)
 
     bot.get('https://www.instagram.com/accounts/login/')
 
     time.sleep(1)
 
-    #accept cookie policy
-    bot.execute_script("window.scrollTo(0, document.body.scrollHeight)") 
-    bot.find_element(By.XPATH,"/html/body/div[4]/div/div/div[3]/div[2]/button").click()
+
+    #check if cookies 
+    try:
+        element = bot.find_element(By.XPATH,"/html/body/div[4]/div/div/div[3]/div[2]/button")
+        element.click()
+        
+    except NoSuchElementException:
+        print("[Info] - Instagram did not require to accept cookies this time.")
+
+
+        
 
     print("[Info] - Logging in...")  
 
