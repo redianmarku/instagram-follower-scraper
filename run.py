@@ -68,17 +68,19 @@ def scrape_followers(bot, username, user_input):
 
     users = set()
 
-    for _ in range(round(user_input // 20)):
+    while len(users) < user_input:
+        followers = bot.find_elements(By.XPATH, "//a[contains(@href, '/')]")
+
+        for i in followers:
+            if i.get_attribute('href'):
+                users.add(i.get_attribute('href').split("/")[3])
+            else:
+                continue
+
         ActionChains(bot).send_keys(Keys.END).perform()
         time.sleep(1)
 
-    followers = bot.find_elements(By.XPATH, "//a[contains(@href, '/')]")
-
-    for i in followers:
-        if i.get_attribute('href'):
-            users.add(i.get_attribute('href').split("/")[3])
-        else:
-            continue
+    users = list(users)[:user_input]  # Trim the user list to match the desired number of followers
 
     print(f"[Info] - Saving followers for {username}...")
     with open(f'{username}_followers.txt', 'a') as file:
@@ -93,7 +95,7 @@ def scrape():
     else:
         username, password = credentials
 
-    user_input = int(input('[Required] - How many followers do you want to scrape (60-500 recommended): '))
+    user_input = int(input('[Required] - How many followers do you want to scrape (100-2000 recommended): '))
 
     usernames = input("Enter the Instagram usernames you want to scrape (separated by commas): ").split(",")
 
