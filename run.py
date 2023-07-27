@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager as CM
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.chrome.service import Service
 
 def save_credentials(username, password):
     with open('credentials.txt', 'w') as file:
@@ -99,6 +99,7 @@ def scrape():
 
     usernames = input("Enter the Instagram usernames you want to scrape (separated by commas): ").split(",")
 
+    service = Service()
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
     options.add_argument('--no-sandbox')
@@ -107,7 +108,7 @@ def scrape():
         "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/90.0.1025.166 Mobile Safari/535.19"}
     options.add_experimental_option("mobileEmulation", mobile_emulation)
 
-    bot = webdriver.Chrome(executable_path=CM().install(), options=options)
+    bot = webdriver.Chrome(service=service, options=options)
 
     login(bot, username, password)
 
