@@ -108,7 +108,9 @@ def scrape():
         "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/90.0.1025.166 Mobile Safari/535.19"}
     options.add_experimental_option("mobileEmulation", mobile_emulation)
 
+
     bot = webdriver.Chrome(service=service, options=options)
+    bot.set_page_load_timeout(15) # Set the page load timeout to 15 seconds
 
     login(bot, username, password)
 
