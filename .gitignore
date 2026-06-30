@@ -1,4 +1,7 @@
 .env
 followers.txt
+*_followers.txt
 env
 credentials.txt
+__pycache__/
+*.pyc
